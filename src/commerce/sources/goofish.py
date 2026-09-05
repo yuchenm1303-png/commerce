@@ -408,7 +408,7 @@ class GoofishSourceAdapter:
         transport: GoofishTransport | None = None,
         *,
         state_file: str | None = None,
-        headless: bool = True,
+        headless: bool | None = None,
         clock: Callable[[], datetime] | None = None,
     ) -> None:
         if transport is None:
@@ -417,9 +417,15 @@ class GoofishSourceAdapter:
                 raise ValueError(
                     "state_file or GOOFISH_STATE_FILE is required for live capture"
                 )
+            resolved_headless = headless
+            if resolved_headless is None:
+                resolved_headless = (
+                    os.getenv("GOOFISH_HEADLESS", "true").strip().lower()
+                    not in {"false", "0", "no", "off"}
+                )
             transport = PlaywrightGoofishTransport(
                 resolved_state_file,
-                headless=headless,
+                headless=resolved_headless,
             )
         self.transport = transport
         self._clock = clock or (lambda: datetime.now(timezone.utc))
