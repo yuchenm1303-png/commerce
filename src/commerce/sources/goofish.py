@@ -97,6 +97,11 @@ def _parse_epoch(value: Any) -> datetime | None:
 
 
 def _parse_datetime(value: Any) -> datetime | None:
+    if isinstance(value, datetime):
+        if value.tzinfo is None:
+            return value.replace(tzinfo=timezone.utc)
+        return value.astimezone(timezone.utc)
+
     epoch = _parse_epoch(value)
     if epoch is not None:
         return epoch
