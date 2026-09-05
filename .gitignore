@@ -8,6 +8,7 @@ venv/
 .env.*
 !.env.example
 data/
+state/
 *.sqlite3
 *.db
 .DS_Store
